@@ -1,0 +1,87 @@
+/*
+MySQL Backup
+Source Server Version: 5.7.24
+Source Database: rbz
+Date: 6/23/2021 09:25:25
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+--  Table structure for `accounts`
+-- ----------------------------
+DROP TABLE IF EXISTS `accounts`;
+CREATE TABLE `accounts` (
+  `User_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `User_Name` varchar(50) NOT NULL,
+  `User_First_Name` varchar(50) NOT NULL,
+  `User_Last_Name` varchar(50) NOT NULL,
+  `User_Gender` int(11) NOT NULL,
+  `Status` varchar(20) DEFAULT NULL,
+  `User_Pin_Code` varchar(32) NOT NULL,
+  `User_Password` varchar(32) NOT NULL,
+  `Phone_No` varchar(30) DEFAULT NULL,
+  `E_Mail` varchar(30) DEFAULT NULL,
+  `Address` varchar(50) DEFAULT NULL,
+  `Balance` int(15) NOT NULL,
+  PRIMARY KEY (`User_ID`),
+  UNIQUE KEY `User_Name` (`User_Name`),
+  UNIQUE KEY `User_First_Name` (`User_First_Name`),
+  UNIQUE KEY `User_Last_Name` (`User_Last_Name`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Table structure for `finance`
+-- ----------------------------
+DROP TABLE IF EXISTS `finance`;
+CREATE TABLE `finance` (
+  `User_Name` varbinary(20) NOT NULL,
+  `Reciepient` varchar(20) DEFAULT NULL,
+  `Amount` decimal(15,4) NOT NULL,
+  `Transaction` varchar(20) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Table structure for `loginadmin`
+-- ----------------------------
+DROP TABLE IF EXISTS `loginadmin`;
+CREATE TABLE `loginadmin` (
+  `User_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `User_Name` varchar(50) NOT NULL,
+  `User_Password` varchar(32) NOT NULL,
+  PRIMARY KEY (`User_ID`),
+  UNIQUE KEY `User_Name` (`User_Name`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Procedure definition for `transfer`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `transfer`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `transfer`(amount int, note varchar(50), sending_account 
+int, receiving_account int)
+begin
+
+start transaction;
+update accounts as A
+set A.amount = A.amount - amount
+where A.AccountID = sending_account;
+
+update accounts as A
+set A.amount = A.amount + amount
+where A.AccountID = receiving_account;
+
+insert into transfers values 
+(TransfersID, amount, sending_account, receiving_account, note, now());
+commit work;
+
+end
+;;
+DELIMITER ;
+
+-- ----------------------------
+--  Records 
+-- ----------------------------
+INSERT INTO `accounts` VALUES ('1','paida','Paidamoyo','Mazambani','0','3','1999','123','18787481837','mazambanipt@gmail.com','ytbu,B27,R506','13930'), ('2','c1','Client ','One','0','0','3124','11111','18787481837','mazambanipt@gmail.com','ytbu,B27,R506','600'), ('3','f1','farrukh','baba','0','3','-1','123','18787481837','mazambanipt@gmail.com','27 ','51'), ('4','cst','computers','2019','0','0','1111','123','18787481837','mazambanipt@gmail.com','ytbu,B27,R506','200'), ('5','pana','panashe','NJD','0','1','123','123','18787481837','mazambanipt@gmail.com','ytbu,B27,R506','0'), ('6','c2','ew','c1','0','0','123','12345','18787481837','mazambanipt@gmail.com','ytbu,B27,R506','401');
+INSERT INTO `finance` VALUES ('paida','c1','200.0000','Transfer'), ('c1',' ','1.0000',' '), ('c1',' ','1.0000',' '), ('c1',' ','200.0000','Deposit'), ('c1',' ','48.0000','Withdraw'), ('c1','paida','10.0000','Transfer'), ('paida','c1','10.0000','Transfer'), ('paida',' ','10.0000','Deposit'), ('paida',' ','10.0000','Deposit'), ('paida',' ','10.0000','Deposit'), ('paida','c1','10.0000','Transfer'), ('paida','c1','10.0000','Transfer'), ('paida','c1','10.0000','Transfer'), ('paida','c1','100.0000','Transfer'), ('paida','c1','1.0000','Transfer'), ('paida','c1','1.0000','Transfer'), ('paida','c1','1.0000','Transfer'), ('paida','c1','1.0000','Transfer'), ('paida',' ','1.0000','Deposit'), ('paida',' ','999999999.0000','Deposit'), ('paida','aaa','11111.0000','Transfer'), ('paida',' ','999989000.0000','Withdraw'), ('f1',' ','50.0000','Deposit'), ('c1',' ','7.0000','Withdraw'), ('c1',' ','10.0000','Deposit'), ('c1','paida','1312.0000','Transfer'), ('c1',' ','1312.0000','Deposit'), ('c1',' ','100.0000','Deposit'), ('pana',' ','1.0000','Withdraw'), ('paida',' ','12333.0000','Deposit'), ('c2',' ','500.0000','Deposit'), ('c2','c1','100.0000','Transfer');
+INSERT INTO `loginadmin` VALUES ('1','paidatm','123456'), ('2','a1','123');
